@@ -1,8 +1,31 @@
-- name: Downloading script from S3 bucket
+---
+- name: Getting script url
   aws_s3:
-    bucket: "{{ bucket_name }}"
-    object: "{{ object_key }}"
-    dest: "{{ script_path }}"
-    mode: get
-- name: Running downloaded script
-  command: "{{ executable_shell }} {{ script_path }}"
+    mode: geturl
+    bucket: "{{ s3_object_bucket }}"
+    object: "{{ s3_object_key }}"
+    ignore_nonexistent_bucket: True
+  run_once: true
+  delegate_to: 127.0.0.1
+  register: s3_object_url
+
+- block:
+    - set_fact:
+        s3_tmp_file: "/tmp/{{ s3_object_url.url | to_uuid }}"
+
+    - name: Downloading script from S3 bucket
+      get_url:
+        url: "{{ s3_object_url.url }}"
+        dest: "{{ s3_tmp_file }}"
+
+    - name: Running downloaded script
+      command: "{{ s3_executable_shell }} {{ s3_tmp_file }}"
+
+    - name: Removing downloaded script
+      file:
+        path: "{{ s3_tmp_file }}"
+        state: absent
+
+  become: yes
+  become_method: sudo
+  become_user: root

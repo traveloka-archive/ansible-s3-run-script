@@ -1,2 +1,1 @@
-script_path: /tmp
-executable_shell: /bin/sh
+s3_executable_shell: /bin/sh
