@@ -1,0 +1,16 @@
+---
+galaxy_info:
+  description: Run shell script from S3 bucket
+  company: Traveloka
+  min_ansible_version: 2.0
+  platforms:
+    - name: Ubuntu
+      versions:
+        - trusty
+        - xenial
+  categories:
+    - aws
+    - s3
+    - shell
+    - download
+dependencies: []

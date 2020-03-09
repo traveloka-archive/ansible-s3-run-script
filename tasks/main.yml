@@ -1,0 +1,8 @@
+- name: Downloading script from S3 bucket
+  aws_s3:
+    bucket: "{{ bucket_name }}"
+    object: "{{ object_key }}"
+    dest: "{{ script_path }}"
+    mode: get
+- name: Running downloaded script
+  command: "{{ executable_shell }} {{ script_path }}"
